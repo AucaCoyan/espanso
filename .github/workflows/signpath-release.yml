@@ -1,7 +1,7 @@
 # Huge thanks to Alacritty, as their configuration served as a starting point for this one!
 # See: https://github.com/alacritty/alacritty
 
-name: Prod Release
+name: Signpath Release
 
 on:
   push:
@@ -30,7 +30,6 @@ jobs:
   create-release:
     name: create-release
     needs: ["extract-version"]
-    environment: production
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -49,7 +48,6 @@ jobs:
   windows:
     needs: ["extract-version", "create-release"]
     runs-on: windows-latest
-    environment: production
 
     defaults:
       run:
@@ -125,7 +123,6 @@ jobs:
   linux-x11:
     needs: ["extract-version", "create-release"]
     runs-on: ubuntu-latest
-    environment: production
 
     steps:
       - uses: actions/checkout@v2
@@ -153,7 +150,6 @@ jobs:
   linux-deb:
     needs: ["extract-version", "create-release"]
     runs-on: ubuntu-latest
-    environment: production
 
     steps:
       - uses: actions/checkout@v2
@@ -209,7 +205,6 @@ jobs:
   macos-intel:
     needs: ["extract-version", "create-release"]
     runs-on: macos-latest
-    environment: production
 
     steps:
       - uses: actions/checkout@v2
@@ -280,7 +275,6 @@ jobs:
   macos-m1:
     needs: ["extract-version", "create-release"]
     runs-on: macos-latest
-    environment: production
 
     steps:
       - uses: actions/checkout@v2
@@ -347,7 +341,6 @@ jobs:
   macos-publish-homebrew:
     needs: ["extract-version", "create-release", "macos-m1", "macos-intel"]
     runs-on: macos-latest
-    environment: production
 
     steps:
       - uses: actions/checkout@v2
