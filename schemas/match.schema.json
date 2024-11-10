@@ -630,7 +630,22 @@
                 "values": {
                   "type": "array",
                   "items": {
-                    "type": "string"
+                    "type": [
+                      "string",
+                      "object"
+                    ],
+                    "required": [
+                      "label",
+                      "id"
+                    ],
+                    "properties": {
+                      "label": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      }
+                    }
                   }
                 }
               }
