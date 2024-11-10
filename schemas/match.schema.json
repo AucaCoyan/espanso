@@ -7,6 +7,19 @@
     "$schema": {
       "type": "string"
     },
+    "imports": {
+      "type": "array",
+      "description": "Import other matches from external locations",
+      "items": {
+        "type": "string"
+      }
+    },
+    "anchors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/anchor"
+      }
+    },
     "matches": {
       "type": "array",
       "description": "Array of matches",
@@ -64,6 +77,9 @@
         }
       ],
       "properties": {
+        "anchor": {
+          "$ref": "#/definitions/anchor"
+        },
         "force_clipboard": {
           "type": "boolean"
         },
@@ -146,6 +162,12 @@
         "propagate_case": {
           "type": "boolean"
         },
+        "search_terms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "uppercase_style": {
           "type": "string",
           "enum": [
@@ -205,11 +227,22 @@
                   "type": "string",
                   "enum": [
                     "bash",
-                    "cmd"
+                    "cmd",
+                    "nu",
+                    "powershell",
+                    "pwsh",
+                    "sh",
+                    "wsl",
+                    "wsl2",
+                    "zsh"
                   ]
                 },
                 "cmd": {
                   "type": "string"
+                },
+                "trim": {
+                  "type": "boolean",
+                  "description": "Trim the output of the command. Useful if the cmd has an excess in spaces or newlines"
                 }
               }
             }
@@ -641,15 +674,7 @@
                 "values": {
                   "type": "array",
                   "items": {
-                    "type": "object",
-                    "properties": {
-                      "label": {
-                        "type": "string"
-                      },
-                      "id": {
-                        "type": "string"
-                      }
-                    }
+                    "type": "string"
                   }
                 }
               }
@@ -737,6 +762,10 @@
           }
         }
       ]
+    },
+    "anchor": {
+      "$comment": "https://espanso.org/docs/matches/extensions/#anchors-and-aliases",
+      "type": "string"
     }
   }
 }
