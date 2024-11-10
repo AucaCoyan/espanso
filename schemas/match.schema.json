@@ -693,7 +693,8 @@
       ]
     },
     "anchor": {
-      "$comment": "https://espanso.org/docs/matches/extensions/#anchors-and-aliases"
+      "$comment": "https://espanso.org/docs/matches/extensions/#anchors-and-aliases",
+      "type": "string"
     },
     "form_field_definition": {
       "type": "object",
