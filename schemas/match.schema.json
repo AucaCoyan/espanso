@@ -94,54 +94,7 @@
           "type": "string"
         },
         "form_fields": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "text": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "multiline": {
-                  "type": "boolean"
-                },
-                "default": {
-                  "type": "string",
-                  "default": ""
-                }
-              }
-            },
-            "choices": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "choice",
-                    "list"
-                  ]
-                },
-                "values": {
-                  "type": [
-                    "array",
-                    "string"
-                  ],
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "default": {
-                  "type": "string",
-                  "default": ""
-                },
-                "trim_string_values": {
-                  "type": "boolean",
-                  "description": "If you pass the values as a multiline string and this option is true, Espanso will trim the values and remove empty ones.",
-                  "default": false
-                }
-              }
-            }
-          }
+          "$ref": "#/definitions/form_field_definition"
         },
         "html": {
           "type": "string"
@@ -180,7 +133,10 @@
           "type": "string"
         },
         "replace": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "trigger": {
           "type": "string"
@@ -703,34 +659,7 @@
                   "type": "string"
                 },
                 "fields": {
-                  "type": "object",
-                  "patternProperties": {
-                    "^.*$": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "additionalProperties": false,
-                          "properties": {
-                            "type": {
-                              "type": "string"
-                            },
-                            "default": {
-                              "type": "string"
-                            },
-                            "values": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              }
-                            },
-                            "multiline": {
-                              "type": "boolean"
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  }
+                  "$ref": "#/definitions/form_field_definition"
                 }
               }
             }
@@ -764,8 +693,73 @@
       ]
     },
     "anchor": {
-      "$comment": "https://espanso.org/docs/matches/extensions/#anchors-and-aliases",
-      "type": "string"
+      "$comment": "https://espanso.org/docs/matches/extensions/#anchors-and-aliases"
+    },
+    "form_field_definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^.*$": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/form_multiline_field"
+            },
+            {
+              "$ref": "#/definitions/form_choice_or_list_field"
+            }
+          ]
+        }
+      }
+    },
+    "form_multiline_field": {
+      "$comment": "multine string",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "multiline": {
+          "type": "boolean"
+        },
+        "default": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "form_choice_or_list_field": {
+      "$comment": "choice or list",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "values",
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "choice",
+            "list"
+          ]
+        },
+        "values": {
+          "type": [
+            "array",
+            "string"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "default": {
+          "type": "string",
+          "default": ""
+        },
+        "trim_string_values": {
+          "type": "boolean",
+          "description": "If you pass the values as a multiline string and this option is true, Espanso will trim the values and remove empty ones.",
+          "default": false
+        }
+      }
     }
   }
 }
