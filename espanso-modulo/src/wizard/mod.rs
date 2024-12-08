@@ -24,7 +24,6 @@ pub struct WizardOptions {
 
   pub is_welcome_page_enabled: bool,
   pub is_move_bundle_page_enabled: bool,
-  pub is_legacy_version_page_enabled: bool,
   pub is_wrong_edition_page_enabled: bool,
   pub is_migrate_page_enabled: bool,
   pub is_auto_start_page_enabled: bool,

@@ -74,11 +74,6 @@ fn launcher_main(args: CliModuleArgs) -> i32 {
 
   let is_move_bundle_page_enabled = crate::cli::util::is_subject_to_app_translocation_on_macos();
 
-  let is_legacy_version_page_enabled = util::is_legacy_version_running(&paths.runtime);
-  let runtime_dir_clone = paths.runtime.clone();
-  let is_legacy_version_running_handler =
-    Box::new(move || util::is_legacy_version_running(&runtime_dir_clone));
-
   let (is_wrong_edition_page_enabled, wrong_edition_detected_os) =
     edition_check::is_wrong_edition();
 
@@ -150,7 +145,6 @@ fn launcher_main(args: CliModuleArgs) -> i32 {
   // Only show the wizard if a panel should be displayed
   let should_launch_daemon = if is_welcome_page_enabled
     || is_move_bundle_page_enabled
-    || is_legacy_version_page_enabled
     || is_migrate_page_enabled
     || is_auto_start_page_enabled
     || is_add_path_page_enabled
@@ -161,7 +155,6 @@ fn launcher_main(args: CliModuleArgs) -> i32 {
       version: crate::VERSION.to_string(),
       is_welcome_page_enabled,
       is_move_bundle_page_enabled,
-      is_legacy_version_page_enabled,
       is_wrong_edition_page_enabled,
       is_migrate_page_enabled,
       is_auto_start_page_enabled,
@@ -181,7 +174,6 @@ fn launcher_main(args: CliModuleArgs) -> i32 {
         .map(|path| path.to_string_lossy().to_string()),
       detected_os: wrong_edition_detected_os,
       handlers: WizardHandlers {
-        is_legacy_version_running: Some(is_legacy_version_running_handler),
         backup_and_migrate: Some(backup_and_migrate_handler),
         auto_start: Some(auto_start_handler),
         add_to_path: Some(add_to_path_handler),
