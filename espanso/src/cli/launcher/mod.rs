@@ -17,7 +17,6 @@
  * along with espanso.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use self::util::MigrationError;
 use crate::preferences::Preferences;
 use crate::{
   exit_code::{LAUNCHER_ALREADY_RUNNING, LAUNCHER_CONFIG_DIR_POPULATION_FAILURE, LAUNCHER_SUCCESS},
@@ -49,7 +48,7 @@ pub fn new() -> CliModule {
 
 #[cfg(feature = "modulo")]
 fn launcher_main(args: CliModuleArgs) -> i32 {
-  use espanso_modulo::wizard::{MigrationResult, WizardHandlers, WizardOptions};
+  use espanso_modulo::wizard::{WizardHandlers, WizardOptions};
   let paths = args.paths.expect("missing paths in launcher main");
 
   // TODO: should we create a non-gui wizard? We can also use it for the non-modulo versions of espanso
@@ -76,18 +75,6 @@ fn launcher_main(args: CliModuleArgs) -> i32 {
 
   let (is_wrong_edition_page_enabled, wrong_edition_detected_os) =
     edition_check::is_wrong_edition();
-
-  let is_migrate_page_enabled = espanso_config::is_legacy_config(&paths.config);
-  let paths_clone = paths.clone();
-  let backup_and_migrate_handler =
-    Box::new(move || match util::migrate_configuration(&paths_clone) {
-      Ok(()) => MigrationResult::Success,
-      Err(error) => match error.downcast_ref::<MigrationError>() {
-        Some(MigrationError::Dirty) => MigrationResult::DirtyFailure,
-        Some(MigrationError::Clean) => MigrationResult::CleanFailure,
-        _ => MigrationResult::UnknownFailure,
-      },
-    });
 
   let is_auto_start_page_enabled =
     !preferences.has_selected_auto_start_option() && !cfg!(target_os = "linux");
@@ -145,7 +132,6 @@ fn launcher_main(args: CliModuleArgs) -> i32 {
   // Only show the wizard if a panel should be displayed
   let should_launch_daemon = if is_welcome_page_enabled
     || is_move_bundle_page_enabled
-    || is_migrate_page_enabled
     || is_auto_start_page_enabled
     || is_add_path_page_enabled
     || is_accessibility_page_enabled
@@ -156,7 +142,6 @@ fn launcher_main(args: CliModuleArgs) -> i32 {
       is_welcome_page_enabled,
       is_move_bundle_page_enabled,
       is_wrong_edition_page_enabled,
-      is_migrate_page_enabled,
       is_auto_start_page_enabled,
       is_add_path_page_enabled,
       is_accessibility_page_enabled,
@@ -174,7 +159,6 @@ fn launcher_main(args: CliModuleArgs) -> i32 {
         .map(|path| path.to_string_lossy().to_string()),
       detected_os: wrong_edition_detected_os,
       handlers: WizardHandlers {
-        backup_and_migrate: Some(backup_and_migrate_handler),
         auto_start: Some(auto_start_handler),
         add_to_path: Some(add_to_path_handler),
         enable_accessibility: Some(enable_accessibility_handler),
@@ -186,13 +170,11 @@ fn launcher_main(args: CliModuleArgs) -> i32 {
     true
   };
 
-  if !espanso_config::is_legacy_config(&paths.config) {
-    if let Err(err) = crate::config::populate_default_config(&paths.config) {
-      error!("Error populating the config directory: {:?}", err);
+  if let Err(err) = crate::config::populate_default_config(&paths.config) {
+    error!("Error populating the config directory: {:?}", err);
 
-      // TODO: show an error message with GUI
-      return LAUNCHER_CONFIG_DIR_POPULATION_FAILURE;
-    }
+    // TODO: show an error message with GUI
+    return LAUNCHER_CONFIG_DIR_POPULATION_FAILURE;
   }
 
   if should_launch_daemon {

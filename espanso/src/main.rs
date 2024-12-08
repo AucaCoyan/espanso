@@ -24,7 +24,7 @@ use std::path::PathBuf;
 
 use clap::{App, AppSettings, Arg, ArgMatches, SubCommand};
 use cli::{CliAlias, CliModule, CliModuleArgs};
-use log::{error, info, warn};
+use log::{error, info};
 use logging::FileProxy;
 use simplelog::{
   CombinedLogger, ConfigBuilder, LevelFilter, SharedLogger, TermLogger, TerminalMode, WriteLogger,
